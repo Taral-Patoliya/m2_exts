@@ -1,0 +1,6 @@
+ {
+"name": "taral/ajaxnav",
+"autoload": {
+    "psr-4": { "Taral\\AjaxNav\\": "" },
+    "files": [ "registration.php" ]
+} }

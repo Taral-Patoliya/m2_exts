@@ -1,0 +1,44 @@
+<script>
+	require(['jquery'],function($)
+	{
+		var filterBlock = $('#layered-filter-block');
+		var a = '#layered-filter-block a';
+		var main = $('.main');
+
+		$(document).on('click',a,function(event){
+			event.preventDefault();
+			var href = $(this).attr('href');
+			var request = addParameterToURL(href,'ajax=1');
+			$.ajax({
+				url:request,
+				showLoader: true
+			}).done(function(data){
+				filterBlock.replaceWith(data.sidebar);
+				main.html('').append(data.formkey).append(data.authentication).append(data.content);
+				$('body').trigger('contentUpdated');
+				changeUrl(href);
+				sanitizeUrls();
+			});
+		});
+
+		function addParameterToURL(url,param){
+			_url = url;
+			_url += (_url.split('?')[1] ? '&':'?') + param;
+			return _url;
+		}
+
+		function changeUrl(url)
+		{
+			window.history.replaceState({},document.title,url)
+		}
+
+		function sanitizeUrls()
+		{
+			filterBlock.find('a').each(function(){
+				var url = this.href;
+				this.href = url.replace(new RegExp('[?&]' + 'ajax' + '=[^&#]*(#.*)?$'),'$1').replace(new RegExp('([?&])' + 'ajax' + '=[^&]*&'), '$1').replace(new RegExp('[?&]' + '_' + '=[^&#]*(#.*)?$'),'$1').replace(new RegExp('([?&])' + '_' + '=[^&]*&'), '$1');
+			});
+		}
+	});
+
+</script>
